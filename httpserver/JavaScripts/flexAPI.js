@@ -1,3 +1,32 @@
+function processPayment() {
+	console.log("processPayment");
+
+	var settings = {
+			"async": false,
+			"crossDomain": true,
+			"url": "http://localhost:5000/processPayment",
+			"method": "post",
+			"headers": {
+				"Accept": "*/*",
+				"Cache-Control": "no-cache",
+				"cache-control": "no-cache"
+			},
+			"data": jQuery.param({test: 'mad'})
+		};
+		
+	$.ajax(settings).done(function (response, status) {
+
+		console.log("Status: "+ status);
+
+		console.log("keyID: "+ response);
+
+		setKeyID(response);
+
+		enableInputs();
+
+	}).fail(failResponse);
+}
+
 // Asks the backend for one KeyID to generate one cardToken
 function getCardTokenKey() {
     console.log("getCardTokenKey");

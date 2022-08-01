@@ -19,6 +19,7 @@ import (
 
 	"github.com/akayna/Go-dreamBridgeCybersource/rest/commons"
 	"github.com/akayna/Go-dreamBridgeCybersource/rest/flexAPI"
+	"github.com/akayna/Go-dreamBridgeCybersource/rest/gtw"
 	"github.com/akayna/Go-dreamBridgeCybersource/rest/microform"
 	"github.com/akayna/Go-dreamBridgeCybersource/rest/threeds"
 	"github.com/akayna/Go-dreamBridgeUtils/jsonfile"
@@ -75,8 +76,8 @@ func main() {
 	logger.Printf("Loading credentials...")
 
 	// Credenciais teste
-	err := jsonfile.ReadJSONFile2("/home/rafaelsonhador/Documents/Credenciais Cybersource/", "rafaelcunha.json", &credentials)
-
+	//err := jsonfile.ReadJSONFile2("/home/rafaelsonhador/Documents/Credenciais Cybersource/", "rafaelcunha.json", &credentials)
+	err := jsonfile.ReadJSONFile2("./", "madjer.json", &credentials)
 	// Credenciais live
 	//err := jsonfile.ReadJSONFile2("/home/rafaelsonhador/Documents/Credenciais Cybersource/", "cybsbrdemo.json", &credentials)
 
@@ -114,6 +115,9 @@ func main() {
 	router.HandleFunc("/setupPayerAuth", setupPayerAuth)
 	router.HandleFunc("/doEnrollment", doEnrollment)
 	router.HandleFunc("/validate", validate)
+
+	//gtw.ProcessPayment
+	router.HandleFunc("/processPayment", processPayment)
 
 	directory := flag.String("d", "./", "the directory of static file to host")
 	router.Handle("/", http.StripPrefix(strings.TrimRight("/", "/"), http.FileServer(http.Dir(*directory))))
@@ -248,6 +252,30 @@ func getMicroformContext(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Write([]byte(context))
+}
+
+func processPayment(w http.ResponseWriter, req *http.Request) {
+	log.Println("processPayment")
+	defer req.Body.Close()
+	body, err := ioutil.ReadAll(req.Body)
+
+	if err != nil {
+		log.Println("main.processPayment - Error reading POST request body.")
+		w.Write([]byte("Error reading POST request body."))
+		return
+	}
+	log.Println("processPayment body", body)
+	log.Println("processPayment body", string(body))
+	log.Println("processPayment req", req)
+	var paymentReq *gtw.Payment
+	payment, res, err := gtw.ProcessPayment(&credentials.CyberSourceCredential, paymentReq)
+
+	if err != nil {
+		log.Println("main.validateMicroformToken - Error validating token received.")
+		log.Println(err)
+		w.Write([]byte(res))
+	}
+	log.Println(payment)
 }
 
 func validateMicroformToken(w http.ResponseWriter, req *http.Request) {
