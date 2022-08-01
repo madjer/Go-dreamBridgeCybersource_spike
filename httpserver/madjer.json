@@ -1,0 +1,14 @@
+{
+	"cyberSourceCredential": {
+			"sharedSecretKey":  "RSowMR98hhWPDdSBt9dPQ+qhHeUtXG5CYN+KFWLgpP0=",
+			"profileID":        "",
+			"apiKeyID":         "117400b4-b0fa-4161-95e4-b86f3fd4a771",
+			"mid":              "totvs_digital"
+	},
+	"cardinalCredential": {
+			"apiKeyID":         "",
+			"apiIdentifier":    "",
+			"orgUnitID":        "",
+			"mid":              ""
+	}
+}
